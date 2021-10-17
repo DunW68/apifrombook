@@ -8,6 +8,9 @@ jobs:
         auth:
           username: postgres
           password: admin  # context / project UI env-var reference
+        environment:
+          POSTGRES_USER: postgres
+          
     working_directory: ~/repo
 
     steps:
