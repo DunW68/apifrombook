@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+
+  db:
+    image: postgres:12.0-alpine
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=dev_db
+    ports:
+      - 5432:5432
+
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: sh -c "pip install -r requirements.txt && gunicorn -w 2 -b:8000 --timeout 360 --env=DJANGO_SETTINGS_MODULE=apidrf.settings apidrf.wsgi"
+    volumes:
+      - .:/home/apidrf
+      - /static:/static
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    restart: always
+
